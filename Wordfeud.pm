@@ -6,7 +6,7 @@ package Wordfeud;
 use strict;
 use warnings;
 
-use Digest::SHA1 qw( sha1 );
+use Digest::SHA1 qw( sha1_hex );
 use JSON qw( encode_json decode_json );
 use LWP;
 #use HTTP::Request::Common qw( POST );
@@ -14,7 +14,7 @@ use LWP;
 use Data::Dumper;
 
 # This might be subject to change... unsure!
-my $base_url = 'http://game04.wordfeud.com/wf/';
+my $base_url = 'http://game03.wordfeud.com/wf/';
 
 sub new {
   my ( $class ) = @_;
@@ -41,7 +41,7 @@ sub login_by_email {
   my $action = 'user/login/email/';
   my $params = {
     email => $email,
-    password => sha1( $password ),
+    password =>  sha1_hex( $password.'JarJarBinks9' ),  # I shit you not
   };
   $self->request( $action, $params );
 }
@@ -51,7 +51,7 @@ sub login_by_id {
   my $action = 'user/login/id/';
   my $params = {
     id => $id,
-    password => sha1( $password ),
+    password => sha1_hex( $password.'JarJarBinks9' ),
   };
   $self->request( $action, $params );
 }
@@ -85,6 +85,8 @@ sub create_account {
   if ( $res ) {
     return $res->{id};
   }
+  
+  return undef;
 }
 
 sub get_friends {
@@ -96,9 +98,25 @@ sub get_friends {
   if ( $res ) {
     return $res->{relationships};
   }
+  
+  return undef;
 }
 
-sub add_friend {}
+sub add_friend {
+  my ( $self, $user_id ) = @_;
+  my $action = 'relationship/create/';
+  
+  my $params = {
+    id => $user_id,
+    type => 0,
+  };
+
+  my $res = $self->request( $action, $params );
+  
+  if ( $res ) {
+    return $res;
+  }
+}
 
 sub delete_friend {}
 
@@ -106,9 +124,29 @@ sub get_chat_messages {}
 
 sub send_chat_message {}
 
-sub get_games {}
+sub get_games {
+  my ( $self ) = @_;
+  my $action = 'user/games/';
 
-sub get_game {}
+  my $res = $self->request( $action );
+
+  if ( $res ) {
+    return $res->{games};
+  }
+  return undef;
+}
+
+sub get_game {
+  my ( $self, $game_id ) = @_;
+  my $action = "game/$game_id/";
+
+  my $res = $self->request( $action );
+
+  if ( $res ) {
+    return $res->{game};
+  }
+  return undef;
+}
 
 sub get_board {}
 
@@ -151,7 +189,7 @@ sub request {
     $res = $ua->post( $base_url.$action, %$headers );
   }
 
-  print Dumper( $res );
+  #print Dumper( $res );
 
   if ( $res->{_rc} == 200 ) {
     my $cookie = $res->{_headers}->{'set-cookie'};
@@ -165,7 +203,7 @@ sub request {
       $self->set_session_id( $session_id );
     }
     
-    print "\nSession ID: [$session_id]\n\nContent:\n".Dumper($content->{content})."\n\n";
+    #print "\nSession ID: [$session_id]\n\nContent:\n".Dumper($content->{content})."\n\n";
     
     if ( $content->{status} eq 'success' ) {
       return $content->{content};
