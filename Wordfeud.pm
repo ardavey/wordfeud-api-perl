@@ -6,7 +6,7 @@ package Wordfeud;
 use strict;
 use warnings;
 
-use Digest::SHA1 qw( sha1_hex );
+use Digest::SHA qw( sha1_hex );
 use JSON qw( encode_json decode_json );
 use LWP;
 #use HTTP::Request::Common qw( POST );
@@ -15,6 +15,8 @@ use Data::Dumper;
 
 # This might be subject to change... unsure!
 my $base_url = 'http://game03.wordfeud.com/wf/';
+
+our $distribution = '??AAAAAAAAAABBCCDDDDDEEEEEEEEEEEEFFGGGHHHIIIIIIIIIJKLLLLMMNNNNNNOOOOOOOPPQRRRRRRSSSSSTTTTTTTUUUUVVWWXYYZ';
 
 sub new {
   my ( $class ) = @_;
@@ -28,7 +30,7 @@ sub get_session_id {
   if ( $self->{session_id} ) {
     return $self->{session_id};
   }
-  return '';
+  return undef;
 }
 
 sub set_session_id {
@@ -41,9 +43,16 @@ sub login_by_email {
   my $action = 'user/login/email/';
   my $params = {
     email => $email,
-    password =>  sha1_hex( $password.'JarJarBinks9' ),  # I shit you not
+    password => sha1_hex( $password.'JarJarBinks9' ),  # I shit you not
   };
-  $self->request( $action, $params );
+  if ( $self->request( $action, $params ) ) {
+    return $self->get_session_id();
+  }
+  $params->{password} = sha1_hex( $password );
+  if ( $self->request( $action, $params ) ) {
+    return $self->get_session_id();
+  }  
+  return 0;
 }
 
 sub login_by_id {
@@ -51,9 +60,12 @@ sub login_by_id {
   my $action = 'user/login/id/';
   my $params = {
     id => $id,
-    password => sha1_hex( $password.'JarJarBinks9' ),
+    password => sha1_hex( $password.'JarJarBinks9' ),  # I shit you not
   };
-  $self->request( $action, $params );
+  if ( $self->request( $action, $params ) ) {
+    return $self->get_session_id();
+  }
+  return 0;
 }
 
 sub search_user {
@@ -176,11 +188,10 @@ sub request {
     'Content-Type' => 'application/json',
     'User-Agent' => 'Perl Wordfeud API',
   };
-  
-  if ( $self->{session_id} ) {
-    $headers->{'Cookie'} = 'sessionid='.$self->{session_id};
+  if ( $self->get_session_id() ) {
+    $headers->{'Cookie'} = 'sessionid='.$self->get_session_id();
   }
-
+  
   my $res;
   if ( $params ) {
     $res = $ua->post( $base_url.$action, %$headers, Content => encode_json( $params ) );
@@ -189,7 +200,7 @@ sub request {
     $res = $ua->post( $base_url.$action, %$headers );
   }
 
-  #print Dumper( $res );
+  #print "<pre>".Dumper( $res )."</pre>";
 
   if ( $res->{_rc} == 200 ) {
     my $cookie = $res->{_headers}->{'set-cookie'};
@@ -199,11 +210,9 @@ sub request {
     }
     my $content = decode_json( $res->{_content} );
     
-    if ( length $session_id && ! $self->get_session_id() ) {
+    if ( length $session_id ) {
       $self->set_session_id( $session_id );
     }
-    
-    #print "\nSession ID: [$session_id]\n\nContent:\n".Dumper($content->{content})."\n\n";
     
     if ( $content->{status} eq 'success' ) {
       return $content->{content};
