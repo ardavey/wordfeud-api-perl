@@ -132,7 +132,17 @@ sub add_friend {
 
 sub delete_friend {}
 
-sub get_chat_messages {}
+sub get_chat_messages {
+  my ( $self, $game_id ) = @_;
+  my $action = "game/$game_id/chat/";
+  
+  my $res = $self->request( $action );
+
+  if ( $res ) {
+    return $res->{messages};
+  }
+  return undef;
+}
 
 sub send_chat_message {}
 
@@ -176,7 +186,10 @@ sub reject_invite {}
 
 sub change_password {}
 
-sub log_out {}
+sub log_out {
+  my ( $self ) = @_;
+  $self->set_session_id( undef );
+}
 
 sub request {
   my ( $self, $action, $params ) = @_;
