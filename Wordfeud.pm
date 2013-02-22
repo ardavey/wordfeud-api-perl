@@ -10,19 +10,28 @@ use Digest::SHA qw( sha1_hex );
 use JSON qw( encode_json decode_json );
 use LWP;
 #use HTTP::Request::Common qw( POST );
-
+use Log::Log4perl qw( get_logger );
 use Data::Dumper;
+
+Log::Log4perl->init( '/home/ardavey/log4perl/wf.conf' );
+$Log::Log4perl::DateFormat::GMTIME = 1;
+
+my $log = get_logger();
 
 # This might be subject to change... unsure!
 my $base_url = 'http://game03.wordfeud.com/wf/';
 
-our $distribution = '??AAAAAAAAAABBCCDDDDDEEEEEEEEEEEEFFGGGHHHIIIIIIIIIJKLLLLMMNNNNNNOOOOOOOPPQRRRRRRSSSSSTTTTTTTUUUUVVWWXYYZ';
-
 sub new {
   my ( $class ) = @_;
   my $self = {};
+  Log::Log4perl::MDC->put('session', 'no session' );
   bless( $self, $class );  
   return $self;
+}
+
+sub get_log {
+  my ( $self ) = @_;
+  return $log;
 }
 
 sub get_session_id {
@@ -33,9 +42,15 @@ sub get_session_id {
   return undef;
 }
 
+sub get_distribution {
+  return '??AAAAAAAAAABBCCDDDDDEEEEEEEEEEEEFFGGGHHHIIIIIIIIIJKLLLLMMNNNNNNOOOOOOOPPQRRRRRRSSSSSTTTTTTTUUUUVVWWXYYZ';
+}
+
 sub set_session_id {
   my ( $self, $session_id ) = @_;
   $self->{session_id} = $session_id;
+  Log::Log4perl::MDC->put('session', substr( $session_id, 0, 10 ) );
+  $log->info( "Session ID set" );
 }
 
 sub login_by_email {
@@ -45,13 +60,16 @@ sub login_by_email {
     email => $email,
     password => sha1_hex( $password.'JarJarBinks9' ),  # I shit you not
   };
+  $log->info( "User '$email' attempting login by email (1)" );
   if ( $self->request( $action, $params ) ) {
     return $self->get_session_id();
   }
+  $log->info( "User '$email' attempting login by email (2)" );
   $params->{password} = sha1_hex( $password );
   if ( $self->request( $action, $params ) ) {
     return $self->get_session_id();
   }  
+  $log->warn( "User '$email' login failed!" );
   return 0;
 }
 
@@ -62,6 +80,7 @@ sub login_by_id {
     id => $id,
     password => sha1_hex( $password.'JarJarBinks9' ),  # I shit you not
   };
+  $log->info( "User '$id' logging in by ID (1)" );
   if ( $self->request( $action, $params ) ) {
     return $self->get_session_id();
   }
@@ -76,6 +95,7 @@ sub search_user {
     username_or_email => $query,
   };
 
+  $log->info( "Performing user search for '$query'" );
   my $res = $self->request( $action, $params );
 
   if ( $res ) {
@@ -92,6 +112,7 @@ sub create_account {
     password => sha1( $password ),
   };
   
+  $log->info( "Creating account with username '$username' and email '$email'" );
   my $res = $self->request( $action, $params );
   
   if ( $res ) {
@@ -105,6 +126,7 @@ sub get_friends {
   my ( $self ) = @_;
   my $action = 'user/relationships/';
 
+  $log->info( 'Fetching friends list' );
   my $res = $self->request( $action );
 
   if ( $res ) {
@@ -123,6 +145,7 @@ sub add_friend {
     type => 0,
   };
 
+  $log->info( "Adding user $user_id as a friend" );
   my $res = $self->request( $action, $params );
   
   if ( $res ) {
@@ -136,6 +159,7 @@ sub get_chat_messages {
   my ( $self, $game_id ) = @_;
   my $action = "game/$game_id/chat/";
   
+  $log->info( 'Fetching list of chat messages' );
   my $res = $self->request( $action );
 
   if ( $res ) {
@@ -150,6 +174,7 @@ sub get_games {
   my ( $self ) = @_;
   my $action = 'user/games/';
 
+  $log->info( 'Fetching list of games' );
   my $res = $self->request( $action );
 
   if ( $res ) {
@@ -162,6 +187,7 @@ sub get_game {
   my ( $self, $game_id ) = @_;
   my $action = "game/$game_id/";
 
+  $log->info( "Fetching details for game $game_id" );
   my $res = $self->request( $action );
 
   if ( $res ) {
@@ -188,6 +214,7 @@ sub change_password {}
 
 sub log_out {
   my ( $self ) = @_;
+  $log->info( 'Logging out' );
   $self->set_session_id( undef );
 }
 
@@ -223,7 +250,7 @@ sub request {
     }
     my $content = decode_json( $res->{_content} );
     
-    if ( length $session_id ) {
+    if ( length $session_id && ! get_session_id() ) {
       $self->set_session_id( $session_id );
     }
     
@@ -232,11 +259,11 @@ sub request {
     }
     else {
       return undef;
-      # some kind of error
+      $log->error( 'Error sending request!' );
     }
   }
   else {
-    die "Unexpected HTTP response: $res->{_rc}";
+    $log->error_die( "Unexpected HTTP response: $res->{_rc}" );
   }
 
 }
