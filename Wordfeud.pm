@@ -16,7 +16,7 @@ use Data::Dumper;
 Log::Log4perl->init( '/home/ardavey/log4perl/wf.conf' );
 $Log::Log4perl::DateFormat::GMTIME = 1;
 
-my $log = get_logger();
+our $log = get_logger();
 
 # This might be subject to change... unsure!
 my $base_url = 'http://game03.wordfeud.com/wf/';
@@ -24,7 +24,7 @@ my $base_url = 'http://game03.wordfeud.com/wf/';
 sub new {
   my ( $class ) = @_;
   my $self = {};
-  Log::Log4perl::MDC->put('session', 'no session' );
+  Log::Log4perl::MDC->put('session', 'NOSESSION' );
   bless( $self, $class );  
   return $self;
 }
@@ -49,8 +49,11 @@ sub get_distribution {
 sub set_session_id {
   my ( $self, $session_id ) = @_;
   $self->{session_id} = $session_id;
-  Log::Log4perl::MDC->put('session', substr( $session_id, 0, 10 ) );
-  $log->info( "Session ID set" );
+  if ( !defined $session_id ) {
+    $session_id = 'NOSESSION';
+  }
+  Log::Log4perl::MDC->put('session', substr( $session_id, 0, 9 ) );
+  $log->debug( "Session ID set to $session_id" );
 }
 
 sub login_by_email {
@@ -60,16 +63,15 @@ sub login_by_email {
     email => $email,
     password => sha1_hex( $password.'JarJarBinks9' ),  # I shit you not
   };
-  $log->info( "User '$email' attempting login by email (1)" );
   if ( $self->request( $action, $params ) ) {
     return $self->get_session_id();
   }
-  $log->info( "User '$email' attempting login by email (2)" );
+  $log->info( "Attempting non-seeded login for user '$email'" );
   $params->{password} = sha1_hex( $password );
   if ( $self->request( $action, $params ) ) {
     return $self->get_session_id();
   }  
-  $log->warn( "User '$email' login failed!" );
+  $log->warn( "User '$email' login failed" );
   return 0;
 }
 
@@ -80,7 +82,7 @@ sub login_by_id {
     id => $id,
     password => sha1_hex( $password.'JarJarBinks9' ),  # I shit you not
   };
-  $log->info( "User '$id' logging in by ID (1)" );
+  $log->debug( "User '$id' logging in by ID (1)" );
   if ( $self->request( $action, $params ) ) {
     return $self->get_session_id();
   }
@@ -95,7 +97,7 @@ sub search_user {
     username_or_email => $query,
   };
 
-  $log->info( "Performing user search for '$query'" );
+  $log->debug( "Performing user search for '$query'" );
   my $res = $self->request( $action, $params );
 
   if ( $res ) {
@@ -112,7 +114,7 @@ sub create_account {
     password => sha1( $password ),
   };
   
-  $log->info( "Creating account with username '$username' and email '$email'" );
+  $log->debug( "Creating account with username '$username' and email '$email'" );
   my $res = $self->request( $action, $params );
   
   if ( $res ) {
@@ -126,7 +128,7 @@ sub get_friends {
   my ( $self ) = @_;
   my $action = 'user/relationships/';
 
-  $log->info( 'Fetching friends list' );
+  $log->debug( 'Fetching friends list' );
   my $res = $self->request( $action );
 
   if ( $res ) {
@@ -145,7 +147,7 @@ sub add_friend {
     type => 0,
   };
 
-  $log->info( "Adding user $user_id as a friend" );
+  $log->debug( "Adding user $user_id as a friend" );
   my $res = $self->request( $action, $params );
   
   if ( $res ) {
@@ -159,7 +161,7 @@ sub get_chat_messages {
   my ( $self, $game_id ) = @_;
   my $action = "game/$game_id/chat/";
   
-  $log->info( 'Fetching list of chat messages' );
+  $log->debug( 'Fetching list of chat messages' );
   my $res = $self->request( $action );
 
   if ( $res ) {
@@ -174,7 +176,7 @@ sub get_games {
   my ( $self ) = @_;
   my $action = 'user/games/';
 
-  $log->info( 'Fetching list of games' );
+  $log->debug( 'Fetching list of games' );
   my $res = $self->request( $action );
 
   if ( $res ) {
@@ -187,7 +189,7 @@ sub get_game {
   my ( $self, $game_id ) = @_;
   my $action = "game/$game_id/";
 
-  $log->info( "Fetching details for game $game_id" );
+  $log->debug( "Fetching details for game $game_id" );
   my $res = $self->request( $action );
 
   if ( $res ) {
@@ -214,7 +216,7 @@ sub change_password {}
 
 sub log_out {
   my ( $self ) = @_;
-  $log->info( 'Logging out' );
+  $log->debug( 'Logging out' );
   $self->set_session_id( undef );
 }
 
