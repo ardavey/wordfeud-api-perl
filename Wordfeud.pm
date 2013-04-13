@@ -112,7 +112,7 @@ sub set_session_id {
   if ( !defined $session_id ) {
     $session_id = 'NOSESSION';
   }
-  Log::Log4perl::MDC->put('session', substr( $session_id, 0, 9 ) );
+  Log::Log4perl::MDC->put('session', $session_id );
 }
 
 sub login_by_email {
