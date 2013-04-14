@@ -6,6 +6,8 @@ package Wordfeud;
 use strict;
 use warnings;
 
+use utf8;
+
 use Digest::SHA qw( sha1_hex );
 use JSON qw( encode_json decode_json );
 use LWP;
@@ -45,65 +47,57 @@ sub get_distribution {
   my ( $self, $game ) = @_;
   
   my $dist = {
-    # US
-    0 => [ qw(
-      ? ? A A A A A A A A A A B B C C D D D D D E E E E E E E E E
-      E E E F F G G G H H H I I I I I I I I I J K L L L L M M N N
-      N N N N O O O O O O O P P Q R R R R R R S S S S S T T T T T
-      T T U U U U V V W W X Y Y Z
-    ) ],
-    # Norwegian
-    1 => [ qw(
-      A A A A A A A B B B C D D D D D E E E E E E E E E F F F F G
-      G G G H H H I I I I I I J J K K K K L L L L L M M M N N N N
-      N N O O O O P P R R R R R R R S S S S S S S T T T T T T T U
-      U U V V V W Y Æ Ø Ø Å Å 
-    ) ],
-    # Dutch
-    2 => [ qw(
-      A A A A A A A B B C C D D D D D E E E E E E E E E E E E E E
-      E E E E F F G G G H H I I I I J J K K K L L L M M M N N N N
-      N N N N N N N O O O O O O P P Q R R R R R S S S S S T T T T
-      T U U U V V W W X Y Z Z 
-    ) ],
-    # Danish
-    3 => [ qw(
-      A A A A A A A B B B B C C D D D D D E E E E E E E E E F F F
-      G G G H H I I I I J J K K K K L L L L L M M M N N N N N N N
-      O O O O O P P R R R R R R R S S S S S S T T T T T T U U U V
-      V V X Y Y Z Æ Æ Ø Ø Å Å 
-    ) ],
-    # Swedish
-    4 => [ qw(
-      A A A A A A A A A B B C D D D D D E E E E E E E E F F G G G
-      H H I I I I I J K K K L L L L L M M M N N N N N N O O O O O
-      O P P R R R R R R R R S S S S S S S S T T T T T T T T T U U
-      U V V X Y Z Ä Ä Ö Ö Å Å 
-    ) ],
-    # English
-    5 => [ qw(
-      ? ? A A A A A A A A A A B B C C D D D D D E E E E E E E E E
-      E E E F F G G G H H H I I I I I I I I I J K L L L L M M N N
-      N N N N O O O O O O O P P Q R R R R R R S S S S S T T T T T
-      T T U U U U V V W W X Y Y Z
-    ) ],
-    # Spanish
-    6 => [ qw(
-      A A A A A A A A A A A A A B B C C C C CH D D D D D E E E E E
-      E E E E E E E E F G G H H I I I I I I J L L L L L L M M N N
-      N N N N Ñ O O O O O O O O O P P Q R R R R R R R S S S S S S
-      S T T T T U U U U U V X Y Z
-    ) ],
-    # French
-    7 => [ qw(
-      A A A A A A A A A A B B C C D D D E E E E E E E E E E E E E
-      E F F G G G H H I I I I I I I I I J K L L L L L M M M N N N
-      N N N O O O O O O P P Q R R R R R R S S S S S S T T T T T T
-      U U U U U U V V W X Y Z 
-    ) ],
+    0 => [ 'US English',
+           [ qw( ? ? A A A A A A A A A A B B C C D D D D D E E E E E E E E E
+                 E E E F F G G G H H H I I I I I I I I I J K L L L L M M N N
+                 N N N N O O O O O O O P P Q R R R R R R S S S S S T T T T T
+                 T T U U U U V V W W X Y Y Z ) ],
+         ],
+    1 => [ 'Norwegian',
+           [ qw( A A A A A A A B B B C D D D D D E E E E E E E E E F F F F G
+                 G G G H H H I I I I I I J J K K K K L L L L L M M M N N N N
+                 N N O O O O P P R R R R R R R S S S S S S S T T T T T T T U
+                 U U V V V W Y Æ Ø Ø Å Å ) ],
+         ],
+    2 => [ 'Dutch',
+           [ qw( A A A A A A A B B C C D D D D D E E E E E E E E E E E E E E
+                 E E E E F F G G G H H I I I I J J K K K L L L M M M N N N N
+                 N N N N N N N O O O O O O P P Q R R R R R S S S S S T T T T
+                 T U U U V V W W X Y Z Z ) ],
+         ],
+    3 => [ 'Danish',
+           [ qw( A A A A A A A B B B B C C D D D D D E E E E E E E E E F F F
+                 G G G H H I I I I J J K K K K L L L L L M M M N N N N N N N
+                 O O O O O P P R R R R R R R S S S S S S T T T T T T U U U V
+                 V V X Y Y Z Æ Æ Ø Ø Å Å ) ],
+         ],
+    4 => [ 'Swedish',
+           [ qw( A A A A A A A A A B B C D D D D D E E E E E E E E F F G G G
+                 H H I I I I I J K K K L L L L L M M M N N N N N N O O O O O
+                 O P P R R R R R R R R S S S S S S S S T T T T T T T T T U U
+                 U V V X Y Z Ä Ä Ö Ö Å Å ) ],
+         ],
+    5 => [ 'International English',
+           [ qw( ? ? A A A A A A A A A A B B C C D D D D D E E E E E E E E E
+                 E E E F F G G G H H H I I I I I I I I I J K L L L L M M N N
+                 N N N N O O O O O O O P P Q R R R R R R S S S S S T T T T T
+                 T T U U U U V V W W X Y Y Z ) ],
+         ],
+    6 => [ 'Spanish',
+           [ qw( A A A A A A A A A A A A A B B C C C C CH D D D D D E E E E E
+                 E E E E E E E E F G G H H I I I I I I J L L L L L L M M N N
+                 N N N N Ñ O O O O O O O O O P P Q R R R R R R R S S S S S S
+                 S T T T T U U U U U V X Y Z ) ],
+         ],
+    7 => [ 'French',
+           [ qw( A A A A A A A A A A B B C C D D D E E E E E E E E E E E E E
+                 E F F G G G H H I I I I I I I I I J K L L L L L M M M N N N
+                 N N N O O O O O O P P Q R R R R R R S S S S S S T T T T T T
+                 U U U U U U V V W X Y Z ) ],
+         ],
   };
-  
-  return $dist->{$game->{ruleset}};
+  $self->{language} = $dist->{$game->{ruleset}}->[0];
+  return $dist->{$game->{ruleset}}->[1];
 }
 
 sub set_session_id {
