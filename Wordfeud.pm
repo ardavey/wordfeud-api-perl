@@ -43,61 +43,198 @@ sub get_session_id {
   return undef;
 }
 
-sub get_distribution {
+sub set_distribution {
   my ( $self, $game ) = @_;
   
   my $dist = {
-    0 => [ 'US English',
-           [ qw( ? ? A A A A A A A A A A B B C C D D D D D E E E E E E E E E
-                 E E E F F G G G H H H I I I I I I I I I J K L L L L M M N N
-                 N N N N O O O O O O O P P Q R R R R R R S S S S S T T T T T
-                 T T U U U U V V W W X Y Y Z ) ],
-         ],
-    1 => [ 'Norwegian',
-           [ qw( A A A A A A A B B B C D D D D D E E E E E E E E E F F F F G
-                 G G G H H H I I I I I I J J K K K K L L L L L M M M N N N N
-                 N N O O O O P P R R R R R R R S S S S S S S T T T T T T T U
-                 U U V V V W Y Æ Ø Ø Å Å ) ],
-         ],
-    2 => [ 'Dutch',
-           [ qw( A A A A A A A B B C C D D D D D E E E E E E E E E E E E E E
-                 E E E E F F G G G H H I I I I J J K K K L L L M M M N N N N
-                 N N N N N N N O O O O O O P P Q R R R R R S S S S S T T T T
-                 T U U U V V W W X Y Z Z ) ],
-         ],
-    3 => [ 'Danish',
-           [ qw( A A A A A A A B B B B C C D D D D D E E E E E E E E E F F F
-                 G G G H H I I I I J J K K K K L L L L L M M M N N N N N N N
-                 O O O O O P P R R R R R R R S S S S S S T T T T T T U U U V
-                 V V X Y Y Z Æ Æ Ø Ø Å Å ) ],
-         ],
-    4 => [ 'Swedish',
-           [ qw( A A A A A A A A A B B C D D D D D E E E E E E E E F F G G G
-                 H H I I I I I J K K K L L L L L M M M N N N N N N O O O O O
-                 O P P R R R R R R R R S S S S S S S S T T T T T T T T T U U
-                 U V V X Y Z Ä Ä Ö Ö Å Å ) ],
-         ],
-    5 => [ 'International English',
-           [ qw( ? ? A A A A A A A A A A B B C C D D D D D E E E E E E E E E
-                 E E E F F G G G H H H I I I I I I I I I J K L L L L M M N N
-                 N N N N O O O O O O O P P Q R R R R R R S S S S S T T T T T
-                 T T U U U U V V W W X Y Y Z ) ],
-         ],
-    6 => [ 'Spanish',
-           [ qw( A A A A A A A A A A A A A B B C C C C CH D D D D D E E E E E
-                 E E E E E E E E F G G H H I I I I I I J L L L L L L M M N N
-                 N N N N Ñ O O O O O O O O O P P Q R R R R R R R S S S S S S
-                 S T T T T U U U U U V X Y Z ) ],
-         ],
-    7 => [ 'French',
-           [ qw( A A A A A A A A A A B B C C D D D E E E E E E E E E E E E E
-                 E F F G G G H H I I I I I I I I I J K L L L L L M M M N N N
-                 N N N O O O O O O P P Q R R R R R R S S S S S S T T T T T T
-                 U U U U U U V V W X Y Z ) ],
-         ],
+    0 => {
+           name => 'US English',
+           tileset => [ qw( ? ? A A A A A A A A A A B B C C D D D D D E E E E E E E E E
+                            E E E F F G G G H H H I I I I I I I I I J K L L L L M M N N
+                            N N N N O O O O O O O P P Q R R R R R R S S S S S T T T T T
+                            T T U U U U V V W W X Y Y Z ) ],
+           points => {
+                      'A' => 1,  'N' => 1,
+                      'B' => 4,  'O' => 1,
+                      'C' => 4,  'P' => 4,
+                      'D' => 2,  'Q' => 10,
+                      'E' => 1,  'R' => 1,
+                      'F' => 4,  'S' => 1,
+                      'G' => 3,  'T' => 1,
+                      'H' => 4,  'U' => 2,
+                      'I' => 1,  'V' => 4,
+                      'J' => 10, 'W' => 4,
+                      'K' => 5,  'X' => 8,
+                      'L' => 1,  'Y' => 4,
+                      'M' => 3,  'Z' => 10,
+                      '?' => 0,
+                      },
+         },
+    1 => {
+           name => 'Norwegian',
+           tileset => [ qw( A A A A A A A B B B C D D D D D E E E E E E E E E F F F F G
+                            G G G H H H I I I I I I J J K K K K L L L L L M M M N N N N
+                            N N O O O O P P R R R R R R R S S S S S S S T T T T T T T U
+                            U U V V V W Y Æ Ø Ø Å Å ) ],
+           points => {
+                      'A' => 1,  'N' => 1,
+                      'B' => 4,  'O' => 3,
+                      'C' => 10, 'P' => 4,
+                      'D' => 1,  'R' => 1,
+                      'E' => 1,  'S' => 1,
+                      'F' => 2,  'T' => 1,
+                      'G' => 4,  'U' => 4,
+                      'H' => 3,  'V' => 5,
+                      'I' => 2,  'W' => 10,
+                      'J' => 4,  'Y' => 8,
+                      'K' => 3,  'Æ' => 8,
+                      'L' => 2,  'Ø' => 4,
+                      'M' => 2,  'Å' => 4,
+                      '?' => 0,
+                      },
+         },
+    2 => {
+           name => 'Dutch',
+           tileset => [ qw( A A A A A A A B B C C D D D D D E E E E E E E E E E E E E E
+                            E E E E F F G G G H H I I I I J J K K K L L L M M M N N N N
+                            N N N N N N N O O O O O O P P Q R R R R R S S S S S T T T T
+                            T U U U V V W W X Y Z Z ) ],
+           points => {
+                      'A' => 1,  'N' => 1,
+                      'B' => 4,  'O' => 1,
+                      'C' => 5,  'P' => 4,
+                      'D' => 2,  'Q' => 10,
+                      'E' => 1,  'R' => 2,
+                      'F' => 4,  'S' => 2,
+                      'G' => 3,  'T' => 2,
+                      'H' => 4,  'U' => 2,
+                      'I' => 2,  'V' => 4,
+                      'J' => 4,  'W' => 5,
+                      'K' => 3,  'X' => 8,
+                      'L' => 3,  'Y' => 8,
+                      'M' => 3,  'Z' => 5,
+                      '?' => 0,
+                      },
+         },
+    3 => {
+           name => 'Danish',
+           tileset => [ qw( A A A A A A A B B B B C C D D D D D E E E E E E E E E F F F
+                            G G G H H I I I I J J K K K K L L L L L M M M N N N N N N N
+                            O O O O O P P R R R R R R R S S S S S S T T T T T T U U U V
+                            V V X Y Y Z Æ Æ Ø Ø Å Å ) ],
+           points => {
+                      'A' => 1,  'O' => 2,
+                      'B' => 3,  'P' => 4,
+                      'C' => 8,  'R' => 1,
+                      'D' => 2,  'S' => 2,
+                      'E' => 1,  'T' => 2,
+                      'F' => 3,  'U' => 3,
+                      'G' => 3,  'V' => 4,
+                      'H' => 4,  'X' => 8,
+                      'I' => 3,  'Y' => 4,
+                      'J' => 4,  'Z' => 9,
+                      'K' => 3,  'Æ' => 4,
+                      'L' => 2,  'Ø' => 4,
+                      'M' => 4,  'Å' => 4,
+                      'N' => 1,  '?' => 0,
+                      },
+         },
+    4 => {
+           name => 'Swedish',
+           tileset => [ qw( A A A A A A A A A B B C D D D D D E E E E E E E E F F G G G
+                            H H I I I I I J K K K L L L L L M M M N N N N N N O O O O O
+                            O P P R R R R R R R R S S S S S S S S T T T T T T T T T U U
+                            U V V X Y Z Ä Ä Ö Ö Å Å ) ],
+           points => {
+                      'A' => 1,  'O' => 2,
+                      'B' => 3,  'P' => 4,
+                      'C' => 8,  'R' => 1,
+                      'D' => 1,  'S' => 1,
+                      'E' => 1,  'T' => 1,
+                      'F' => 3,  'U' => 4,
+                      'G' => 2,  'V' => 3,
+                      'H' => 3,  'X' => 8,
+                      'I' => 1,  'Y' => 7,
+                      'J' => 7,  'Z' => 8,
+                      'K' => 3,  'Ä' => 4,
+                      'L' => 2,  'Ö' => 4,
+                      'M' => 3,  'Å' => 4,
+                      'N' => 1,  '?' => 0,
+                      },
+         },
+    5 => {
+           name => 'International English',
+           tileset => [ qw( ? ? A A A A A A A A A A B B C C D D D D D E E E E E E E E E
+                            E E E F F G G G H H H I I I I I I I I I J K L L L L M M N N
+                            N N N N O O O O O O O P P Q R R R R R R S S S S S T T T T T
+                            T T U U U U V V W W X Y Y Z ) ],
+           points => {
+                      'A' => 1,  'N' => 1,
+                      'B' => 4,  'O' => 1,
+                      'C' => 4,  'P' => 4,
+                      'D' => 2,  'Q' => 10,
+                      'E' => 1,  'R' => 1,
+                      'F' => 4,  'S' => 1,
+                      'G' => 3,  'T' => 1,
+                      'H' => 4,  'U' => 2,
+                      'I' => 1,  'V' => 4,
+                      'J' => 10, 'W' => 4,
+                      'K' => 5,  'X' => 8,
+                      'L' => 1,  'Y' => 4,
+                      'M' => 3,  'Z' => 10,
+                      '?' => 0,
+                      },
+         },
+    6 => {
+           name => 'Spanish',
+           tileset => [ qw( A A A A A A A A A A A A A B B C C C C CH D D D D D E E E E E
+                            E E E E E E E E F G G H H I I I I I I J L L L L L L M M N N
+                            N N N N Ñ O O O O O O O O O P P Q R R R R R R R S S S S S S
+                            S T T T T U U U U U V X Y Z ) ],
+           points => {
+                      'A' => 1,  'N' => 1,
+                      'B' => 3,  'Ñ' => 8,
+                      'C' => 3,  'O' => 1,
+                      'CH' => 5, 'P' => 3,
+                      'D' => 2,  'Q' => 5,
+                      'E' => 1,  'R' => 1,
+                      'F' => 4,  'RR' => 8,
+                      'G' => 3,  'S' => 1,
+                      'H' => 4,  'T' => 2,
+                      'I' => 1,  'U' => 1,
+                      'J' => 8,  'V' => 4,
+                      'L' => 1,  'X' => 8,
+                      'LL' => 8, 'Y' => 5,
+                      'M' => 3,  'Z' => 10,
+                      '?' => 0,
+                      },
+         },
+    7 => {
+           name => 'French',
+           tileset => [ qw( A A A A A A A A A A B B C C D D D E E E E E E E E E E E E E
+                            E F F G G G H H I I I I I I I I I J K L L L L L M M M N N N
+                            N N N O O O O O O P P Q R R R R R R S S S S S S T T T T T T
+                            U U U U U U V V W X Y Z ) ],
+           points => {
+                      'A' => 1,  'N' => 1,
+                      'B' => 3,  'O' => 1,
+                      'C' => 3,  'P' => 3,
+                      'D' => 2,  'Q' => 8,
+                      'E' => 1,  'R' => 1,
+                      'F' => 4,  'S' => 1,
+                      'G' => 2,  'T' => 1,
+                      'H' => 4,  'U' => 1,
+                      'I' => 1,  'V' => 5,
+                      'J' => 8,  'W' => 10,
+                      'K' => 10, 'X' => 10,
+                      'L' => 2,  'Y' => 10,
+                      'M' => 2,  'Z' => 10,
+                      '?' => 0,
+                      },
+         },
   };
-  $self->{language} = $dist->{$game->{ruleset}}->[0];
-  return $dist->{$game->{ruleset}}->[1];
+  
+  $self->{dist} = $dist->{$game->{ruleset}};
 }
 
 sub set_session_id {
