@@ -420,8 +420,6 @@ sub request {
     $res = $ua->post( $base_url.$action, %$headers );
   }
   
-  $self->{res} = $res;
-
   if ( $res->{_rc} == 200 ) {
     my $cookie = $res->{_headers}->{'set-cookie'};
     my $session_id = '';
@@ -429,6 +427,7 @@ sub request {
       ( $session_id ) = $cookie =~ m/sessionid=(\w+);/;
     }
     my $content = decode_json( $res->{_content} );
+    $self->{res} = $content->{content};
     
     if ( length $session_id && ! get_session_id() ) {
       $self->set_session_id( $session_id );
