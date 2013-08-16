@@ -11,13 +11,7 @@ use utf8;
 use Digest::SHA qw( sha1_hex );
 use JSON qw( encode_json decode_json );
 use LWP;
-use Log::Log4perl qw( get_logger );
 use Data::Dumper;
-
-Log::Log4perl->init( '/home/ardavey/log4perl/wf.conf' );
-$Log::Log4perl::DateFormat::GMTIME = 1;
-
-our $log = get_logger();
 
 # This might be subject to change... unsure!
 my $base_url = 'http://game03.wordfeud.com/wf/';
@@ -25,14 +19,8 @@ my $base_url = 'http://game03.wordfeud.com/wf/';
 sub new {
   my ( $class ) = @_;
   my $self = {};
-  Log::Log4perl::MDC->put('session', 'NOSESSION' );
   bless( $self, $class );  
   return $self;
-}
-
-sub get_log {
-  my ( $self ) = @_;
-  return $log;
 }
 
 sub get_session_id {
@@ -72,10 +60,10 @@ sub set_distribution {
          },
     1 => {
            name => 'Norwegian',
-           tileset => [ qw( A A A A A A A B B B C D D D D D E E E E E E E E E F F F F G
-                            G G G H H H I I I I I I J J K K K K L L L L L M M M N N N N
-                            N N O O O O P P R R R R R R R S S S S S S S T T T T T T T U
-                            U U V V V W Y Æ Ø Ø Å Å ) ],
+           tileset => [ qw( ? ? A A A A A A A B B B C D D D D D E E E E E E E E E F F F
+                            F G G G G H H H I I I I I I J J K K K K L L L L L M M M N N
+                            N N N N O O O O P P R R R R R R R S S S S S S S T T T T T T
+                            T U U U V V V W Y Æ Ø Ø Å Å ) ],
            points => {
                       'A' => 1,  'N' => 1,
                       'B' => 4,  'O' => 3,
@@ -95,10 +83,10 @@ sub set_distribution {
          },
     2 => {
            name => 'Dutch',
-           tileset => [ qw( A A A A A A A B B C C D D D D D E E E E E E E E E E E E E E
-                            E E E E F F G G G H H I I I I J J K K K L L L M M M N N N N
-                            N N N N N N N O O O O O O P P Q R R R R R S S S S S T T T T
-                            T U U U V V W W X Y Z Z ) ],
+           tileset => [ qw( ? ? A A A A A A A B B C C D D D D D E E E E E E E E E E E E
+                            E E E E E E F F G G G H H I I I I J J K K K L L L M M M N N
+                            N N N N N N N N N O O O O O O P P Q R R R R R S S S S S T T
+                            T T T U U U V V W W X Y Z Z ) ],
            points => {
                       'A' => 1,  'N' => 1,
                       'B' => 4,  'O' => 1,
@@ -118,10 +106,10 @@ sub set_distribution {
          },
     3 => {
            name => 'Danish',
-           tileset => [ qw( A A A A A A A B B B B C C D D D D D E E E E E E E E E F F F
-                            G G G H H I I I I J J K K K K L L L L L M M M N N N N N N N
-                            O O O O O P P R R R R R R R S S S S S S T T T T T T U U U V
-                            V V X Y Y Z Æ Æ Ø Ø Å Å ) ],
+           tileset => [ qw( ? ? A A A A A A A B B B B C C D D D D D E E E E E E E E E F
+                            F F G G G H H I I I I J J K K K K L L L L L M M M N N N N N
+                            N N O O O O O P P R R R R R R R S S S S S S T T T T T T U U
+                            U V V V X Y Y Z Æ Æ Ø Ø Å Å ) ],
            points => {
                       'A' => 1,  'O' => 2,
                       'B' => 3,  'P' => 4,
@@ -141,10 +129,10 @@ sub set_distribution {
          },
     4 => {
            name => 'Swedish',
-           tileset => [ qw( A A A A A A A A A B B C D D D D D E E E E E E E E F F G G G
-                            H H I I I I I J K K K L L L L L M M M N N N N N N O O O O O
-                            O P P R R R R R R R R S S S S S S S S T T T T T T T T T U U
-                            U V V X Y Z Ä Ä Ö Ö Å Å ) ],
+           tileset => [ qw( ? ? A A A A A A A A A B B C D D D D D E E E E E E E E F F G
+                            G G H H I I I I I J K K K L L L L L M M M N N N N N N O O O
+                            O O O P P R R R R R R R R S S S S S S S S T T T T T T T T T
+                            U U U V V X Y Z Ä Ä Ö Ö Å Å ) ],
            points => {
                       'A' => 1,  'O' => 2,
                       'B' => 3,  'P' => 4,
@@ -187,10 +175,10 @@ sub set_distribution {
          },
     6 => {
            name => 'Spanish',
-           tileset => [ qw( A A A A A A A A A A A A A B B C C C C CH D D D D D E E E E E
-                            E E E E E E E E F G G H H I I I I I I J L L L L L L M M N N
-                            N N N N Ñ O O O O O O O O O P P Q R R R R R R R S S S S S S
-                            S T T T T U U U U U V X Y Z ) ],
+           tileset => [ qw( ? ? A A A A A A A A A A A A A B B C C C C CH D D D D D E E E
+                            E E E E E E E E E E F G G H H I I I I I I J L L L L L L M M
+                            N N N N N N Ñ O O O O O O O O O P P Q R R R R R R R S S S S
+                            S S S T T T T U U U U U V X Y Z ) ],
            points => {
                       'A' => 1,  'N' => 1,
                       'B' => 3,  'Ñ' => 8,
@@ -211,10 +199,10 @@ sub set_distribution {
          },
     7 => {
            name => 'French',
-           tileset => [ qw( A A A A A A A A A A B B C C D D D E E E E E E E E E E E E E
-                            E F F G G G H H I I I I I I I I I J K L L L L L M M M N N N
-                            N N N O O O O O O P P Q R R R R R R S S S S S S T T T T T T
-                            U U U U U U V V W X Y Z ) ],
+           tileset => [ qw( ? ? A A A A A A A A A A B B C C D D D E E E E E E E E E E E
+                            E E E F F G G G H H I I I I I I I I I J K L L L L L M M M N
+                            N N N N N O O O O O O P P Q R R R R R R S S S S S S T T T T
+                            T T U U U U U U V V W X Y Z ) ],
            points => {
                       'A' => 1,  'N' => 1,
                       'B' => 3,  'O' => 1,
@@ -240,10 +228,6 @@ sub set_distribution {
 sub set_session_id {
   my ( $self, $session_id ) = @_;
   $self->{session_id} = $session_id;
-  if ( !defined $session_id ) {
-    $session_id = 'NOSESSION';
-  }
-  Log::Log4perl::MDC->put('session', $session_id );
 }
 
 sub login_by_email {
@@ -256,7 +240,6 @@ sub login_by_email {
   if ( $self->request( $action, $params ) ) {
     return $self->get_session_id();
   }
-  $log->info( "Attempting non-seeded login for user '$email'" );
   $params->{password} = sha1_hex( $password );
   if ( $self->request( $action, $params ) ) {
     return $self->get_session_id();
@@ -442,8 +425,8 @@ sub request {
   else {
     $res = $ua->post( $base_url.$action, %$headers );
   }
-
-  $log->debug( Dumper( $res ) );
+  
+  $self->{res} = $res;
 
   if ( $res->{_rc} == 200 ) {
     my $cookie = $res->{_headers}->{'set-cookie'};
@@ -462,11 +445,10 @@ sub request {
     }
     else {
       return undef;
-      $log->error( 'Error sending request!' );
     }
   }
   else {
-    $log->error_die( "Unexpected HTTP response: $res->{_rc}" );
+    return undef;
   }
 
 }
