@@ -293,12 +293,6 @@ sub create_account {
   return undef;
 }
 
-sub get_avatar_url {
-  my ( $self, $id, $size ) = @_;
-  # Sizes '40', '60' and 'full' are known to work
-  return "http://avatars.wordfeud.com/$size/$id";
-}
-
 sub get_friends {
   my ( $self ) = @_;
   my $action = 'user/relationships/';
