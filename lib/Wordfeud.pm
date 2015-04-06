@@ -59,7 +59,7 @@ sub set_distribution {
                       },
          },
     1 => {
-           name => 'Norwegian',
+           name => 'Norwegian (bokmål)',
            tileset => [ qw( ? ? A A A A A A A B B B C D D D D D E E E E E E E E E F F F
                             F G G G G H H H I I I I I I J J K K K K L L L L L M M M N N
                             N N N N O O O O P P R R R R R R R S S S S S S S T T T T T T
@@ -220,11 +220,29 @@ sub set_distribution {
                        '?' => 0,
                       },
          },
-    #8 => {
-    #       name => '',
-    #       tileset => [],
-    #       points => {},
-    #     },
+    8 => {
+           name => 'Swedish (strict)',
+           tileset => [ qw( ? ? A A A A A A A A A B B C D D D D D E E E E E E E E F F G
+                            G G H H I I I I I J K K K L L L L L M M M N N N N N N O O O
+                            O O O P P R R R R R R R R S S S S S S S S T T T T T T T T T
+                            U U U V V X Y Z Ä Ä Ö Ö Å Å ) ],
+           points => {
+                       'A' => 1,  'O' => 2,
+                       'B' => 3,  'P' => 4,
+                       'C' => 8,  'R' => 1,
+                       'D' => 1,  'S' => 1,
+                       'E' => 1,  'T' => 1,
+                       'F' => 3,  'U' => 4,
+                       'G' => 2,  'V' => 3,
+                       'H' => 3,  'X' => 8,
+                       'I' => 1,  'Y' => 7,
+                       'J' => 7,  'Z' => 8,
+                       'K' => 3,  'Ä' => 4,
+                       'L' => 2,  'Ö' => 4,
+                       'M' => 3,  'Å' => 4,
+                       'N' => 1,  '?' => 0,
+                      },
+         },
     9 => {
            name => 'German',
            tileset => [ qw( ? ? A A A A A Ä B B C C D D D D D E E E E E E E E E E E E E
@@ -240,6 +258,29 @@ sub set_distribution {
                        'V' => 6, 'W' => 3, 'X' => 8, 'Y' => 10, 'Z' => 3,
                      },
          },
+    10 => {
+            name => 'Norwegian (nynorsk)',
+            tileset => [ qw( ? ? A A A A A A A B B B C D D D D D E E E E E E E E E F F F
+                             F G G G G H H H I I I I I I J J K K K K L L L L L M M M N N
+                             N N N N O O O O P P R R R R R R R S S S S S S S T T T T T T
+                             T U U U V V V W Y Æ Ø Ø Å Å ) ],
+            points => {
+                        'A' => 1,  'N' => 1,
+                        'B' => 4,  'O' => 3,
+                        'C' => 10, 'P' => 4,
+                        'D' => 1,  'R' => 1,
+                        'E' => 1,  'S' => 1,
+                        'F' => 2,  'T' => 1,
+                        'G' => 4,  'U' => 4,
+                        'H' => 3,  'V' => 5,
+                        'I' => 2,  'W' => 10,
+                        'J' => 4,  'Y' => 8,
+                        'K' => 3,  'Æ' => 8,
+                        'L' => 2,  'Ø' => 4,
+                        'M' => 2,  'Å' => 4,
+                        '?' => 0,
+                       },
+          },
   };
   
   $self->{dist} = $dist->{$game->{ruleset}};
