@@ -246,9 +246,9 @@ sub set_distribution {
     9 => {
            name => 'German',
            tileset => [ qw( ? ? A A A A A Ä B B C C D D D D D E E E E E E E E E E E E E
-                            E F F G G G H H H H I I I I I I J K K L L M M M M N N N N N
-                            N N N N O O O Ö P Q R R R R R R S S S S S S S T T T T T T U
-                            U U U U U Ü V W X Y Z ) ],
+                            E F F G G G H H H H I I I I I I J K K L L L M M M M N N N N
+                            N N N N N O O O Ö P Q R R R R R R S S S S S S S T T T T T T
+                            U U U U U U Ü V W X Y Z ) ],
            points => {
                        '?' => 0, 'A' => 1, 'Ä' => 6, 'B' => 3, 'C' => 4,
                        'D' => 1, 'E' => 1, 'F' => 4, 'G' => 2, 'H' => 2,
