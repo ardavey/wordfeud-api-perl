@@ -19,7 +19,7 @@ while ( my ( $letter, $count, $points ) = splice( @data, 0, 3 ) ) {
 # tile count hash
 my $counter = 1;
 foreach my $letter ( sort keys %tileset ) {
-  printf( "'%s' => %i,", $letter, $tileset{$letter}->{count} );
+  printf( "'%s' => %i,", $letter, $tileset{$letter}->{points} );
   if ( $counter++ % 2 == 0 ) {
     print "\n";
   }
@@ -54,15 +54,15 @@ print ')';
 
 # Paste the raw tabular data from https://wordfeud.com/wf/help/ into this section, minus the column headers.
 __DATA__
-A	11	1	M	3	3
-B	1	8	N	9	1
-C	1	10	O	5	2
-D	1	6	P	2	4
-E	9	1	R	2	4
-F	1	8	S	7	1
-G	1	8	T	9	1
-H	2	4	U	4	3
-I	10	1	V	2	4
-J	2	4	Y	2	4
-K	6	3	Ä	5	2
-L	6	2	Ö	1	7
+A	12	1	M	5	1
+B	3	4	N	3	3
+C	3	2	O	9	1
+Ç	2	3	P	3	2
+D	4	2	Q	1	8
+E	10	1	R	5	1
+F	2	5	S	7	2
+G	2	4	T	4	2
+H	2	4	U	6	2
+I	9	1	V	2	4
+J	2	6	X	1	10
+L	4	2	Z	1	10
