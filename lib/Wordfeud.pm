@@ -176,8 +176,8 @@ sub set_distribution {
     6 => {
            name => 'Spanish',
            tileset => [ qw( ? ? A A A A A A A A A A A A A B B C C C C CH D D D D D E E E
-                            E E E E E E E E E E F G G H H I I I I I I J L L L L L L M M
-                            N N N N N N Ñ O O O O O O O O O P P Q R R R R R R R S S S S
+                            E E E E E E E E E E F G G H H I I I I I I J L L L L LL M M
+                            N N N N N N Ñ O O O O O O O O O P P Q R R R R R RR S S S S
                             S S S T T T T U U U U U V X Y Z ) ],
            points => {
                        'A' => 1,  'N' => 1,
